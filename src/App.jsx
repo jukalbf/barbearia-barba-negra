@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { fakeDB } from "./db";
 
 // Estilos
 const styles = {
@@ -76,8 +77,12 @@ const Login = ({ onLogin }) => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Passando os dados para o componente pai
-    onLogin({ name, phoneNumber });
+    let user = fakeDB.findUser(phoneNumber);
+    if (!user) {
+      fakeDB.addUser({ name, phoneNumber });
+      user = fakeDB.findUser(phoneNumber);
+    }
+    onLogin(user);
   };
 
   return (
@@ -114,18 +119,20 @@ const Login = ({ onLogin }) => {
 const Agendamentos = ({ user, onLogout }) => {
   const [serviceType, setServiceType] = useState("");
   const [appointmentTime, setAppointmentTime] = useState("");
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState(user.appointments);
 
-  // Dados fictícios de serviços e horários permitidos
   const services = [
     { id: "haircut", name: "Corte de cabelo" },
     { id: "beard", name: "Barba" },
   ];
 
+  // Atualiza o estado de agendamentos sempre que houver uma mudança no banco de dados
+  useEffect(() => {
+    setAppointments(fakeDB.findUser(user.phoneNumber).appointments);
+  }, [user.phoneNumber]);
+
   const handleServiceChange = (event) => {
-    const selectedService = event.target.value;
-    setServiceType(selectedService);
-    // Lógica para verificar se o serviço tem horário permitido
+    setServiceType(event.target.value);
   };
 
   const handleTimeChange = (event) => {
@@ -138,19 +145,16 @@ const Agendamentos = ({ user, onLogout }) => {
         service: serviceType,
         time: appointmentTime,
       };
-      setAppointments((prevAppointments) => [
-        ...prevAppointments,
-        newAppointment,
-      ]);
+      fakeDB.addAppointment(user.phoneNumber, newAppointment);
+      setAppointments(fakeDB.findUser(user.phoneNumber).appointments); // Atualiza o estado com os novos agendamentos
       setServiceType("");
       setAppointmentTime("");
     }
   };
 
   const handleCancelAppointment = (index) => {
-    setAppointments((prevAppointments) =>
-      prevAppointments.filter((_, i) => i !== index)
-    );
+    fakeDB.cancelAppointment(user.phoneNumber, index);
+    setAppointments(fakeDB.findUser(user.phoneNumber).appointments); // Atualiza o estado com os novos agendamentos
   };
 
   return (
@@ -235,15 +239,7 @@ const App = () => {
     setUser(null);
   };
 
-  return (
-    <div>
-      {!user ? (
-        <Login onLogin={handleLogin} />
-      ) : (
-        <Agendamentos user={user} onLogout={handleLogout} />
-      )}
-    </div>
-  );
+  return <div>{!user ? <Login onLogin={handleLogin} /> : <Agendamentos user={user} onLogout={handleLogout} />}</div>;
 };
 
 export default App;
