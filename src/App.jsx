@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fakeDB } from "./db";
+import { fakeDB } from "./fakeDatabase";
 
 // Estilos
 const styles = {
@@ -146,7 +146,8 @@ const Agendamentos = ({ user, onLogout }) => {
         time: appointmentTime,
       };
       fakeDB.addAppointment(user.phoneNumber, newAppointment);
-      setAppointments(fakeDB.findUser(user.phoneNumber).appointments); // Atualiza o estado com os novos agendamentos
+      // Atualiza a lista de agendamentos diretamente com o banco de dados
+      setAppointments(fakeDB.findUser(user.phoneNumber).appointments);
       setServiceType("");
       setAppointmentTime("");
     }
@@ -154,7 +155,8 @@ const Agendamentos = ({ user, onLogout }) => {
 
   const handleCancelAppointment = (index) => {
     fakeDB.cancelAppointment(user.phoneNumber, index);
-    setAppointments(fakeDB.findUser(user.phoneNumber).appointments); // Atualiza o estado com os novos agendamentos
+    // Atualiza a lista de agendamentos diretamente com o banco de dados
+    setAppointments(fakeDB.findUser(user.phoneNumber).appointments);
   };
 
   return (
