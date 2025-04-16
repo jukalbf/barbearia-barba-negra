@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fakeDB } from "./fakeDatabase";
+import { fakeDB } from "./db";
 
 // Estilos
 const styles = {
