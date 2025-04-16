@@ -11,25 +11,28 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v3
-        
+
       - name: Instalar Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "22"
-          
+
       - name: Instalar dependências
         run: npm install
-        
+
       - name: Build do React
         run: npm run build
-        
+
+      - name: Copiar web.config para a pasta de build
+        run: cp web.config dist/
+
       - name: Login no Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
+
       - name: Deploy para Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'barbearia-barbanegra' 
+          app-name: 'barbearia-barbanegra'
           package: './dist'
