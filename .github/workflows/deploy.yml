@@ -31,5 +31,5 @@ jobs:
       - name: Deploy para Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'barbearia-barbanegra'  # Substitua pelo nome do seu Web App
+          app-name: 'barbearia-barbanegra' 
           package: './dist'
