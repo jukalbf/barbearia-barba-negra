@@ -29,6 +29,7 @@ const styles = {
     margin: "8px 0",
     borderRadius: "4px",
     border: "1px solid #ccc",
+    boxSizing: "border-box",
   },
   button: {
     backgroundColor: "#4CAF50",
