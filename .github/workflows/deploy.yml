@@ -23,9 +23,6 @@ jobs:
       - name: Build do React
         run: npm run build
 
-      - name: Copiar web.config para a pasta de build
-        run: cp web.config dist/
-
       - name: Login no Azure
         uses: azure/login@v1
         with:
